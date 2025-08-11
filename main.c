@@ -55,12 +55,12 @@ int main() {
     double outputs[][1] = {{0}, {1}, {1}, {0}};
 
     // 신경망 구조 정의
-    int layers_config[] = {2, 4, 4, 1}; // 입력층, 은닉층, 출력층의 뉴런 수
+    int layers_config[] = {2, 2, 1}; // 입력층, 은닉층, 출력층의 뉴런 수
     // (create_neural_network를 이 배열에 맞게 수정했다고 가정)
-    NeuralNetwork* nn = create_neural_network_flexible(4, layers_config);
+    NeuralNetwork* nn = create_neural_network_flexible(3, layers_config);
 
     // 학습 파라미터
-    int epochs = 1000000;
+    int epochs = 50000;
     double learning_rate = 0.1;
 
     // 2. 훈련 (Training Loop)
