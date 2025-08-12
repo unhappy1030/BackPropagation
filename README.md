@@ -19,9 +19,9 @@
 - 활성화 기준인 편향(bias) b를 더함
 입력 벡터: $X = [x_1,x_2]$
 가중치 벡터: $W = [w_1,w_2]$
-가중합(weighted sum): $z$
-$$z = X \cdot W^T + b$$
-$$ z = (x_1 \cdot w_1 + x_2 \cdot w_2) + b $$
+가중합(weighted sum): $z$<br>
+$$z = X \cdot W^T + b$$<br>
+$$ z = (x_1 \cdot w_1 + x_2 \cdot w_2) + b $$<br>
 **<활성화 함수의 역할>**
 역할: "출력할지 말지" 결정하고, "신호를 얼마나 강하게" 할지 조절하는 것.
 
