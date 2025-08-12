@@ -34,64 +34,64 @@ typedef struct{
     double loss;
 } NeuralNetwork;
 
-// NeuralNetwork ÃÊ±âÈ­ ÇÔ¼ö
+// NeuralNetwork ì´ˆê¸°í™” í•¨ìˆ˜
 NeuralNetwork* create_neural_network(const int layer_num, const int neuron_num, const int weight_num);
 //
 NeuralNetwork* create_neural_network_flexible(const int num_layers, const int* layers_config);
-// Forward Propagation ÇÔ¼ö
+// Forward Propagation í•¨ìˆ˜
 void forward_propagate(NeuralNetwork* nn, double* inputs);
-// Back Propagation ÇÔ¼ö
+// Back Propagation í•¨ìˆ˜
 void back_propagate(NeuralNetwork* nn, double* inputs, double* actual_outputs, double learning_rate);
 
 void free_neural_network(NeuralNetwork* nn);
 
 
 int main() {
-    // 1. ÁØºñ (Setup)
-    srand(time(NULL)); // ·£´ı ½Ãµå ÃÊ±âÈ­
+    // 1. ì¤€ë¹„ (Setup)
+    srand(time(NULL)); // ëœë¤ ì‹œë“œ ì´ˆê¸°í™”
 
-    // XOR ÇĞ½À µ¥ÀÌÅÍ
+    // XOR í•™ìŠµ ë°ì´í„°
     double inputs[][2] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
     double outputs[][1] = {{0}, {1}, {1}, {0}};
 
-    // ½Å°æ¸Á ±¸Á¶ Á¤ÀÇ
-    int layers_config[] = {2, 2, 1}; // ÀÔ·ÂÃş, Àº´ĞÃş, Ãâ·ÂÃşÀÇ ´º·± ¼ö
-    // (create_neural_network¸¦ ÀÌ ¹è¿­¿¡ ¸Â°Ô ¼öÁ¤Çß´Ù°í °¡Á¤)
+    // ì‹ ê²½ë§ êµ¬ì¡° ì •ì˜
+    int layers_config[] = {2, 2, 1}; // ì…ë ¥ì¸µ, ì€ë‹‰ì¸µ, ì¶œë ¥ì¸µì˜ ë‰´ëŸ° ìˆ˜
+    // (create_neural_networkë¥¼ ì´ ë°°ì—´ì— ë§ê²Œ ìˆ˜ì •í–ˆë‹¤ê³  ê°€ì •)
     NeuralNetwork* nn = create_neural_network_flexible(3, layers_config);
 
-    // ÇĞ½À ÆÄ¶ó¹ÌÅÍ
+    // í•™ìŠµ íŒŒë¼ë¯¸í„°
     int epochs = 50000;
     double learning_rate = 0.1;
 
-    // 2. ÈÆ·Ã (Training Loop)
-    printf("ÈÆ·Ã ½ÃÀÛ...\n");
+    // 2. í›ˆë ¨ (Training Loop)
+    printf("í›ˆë ¨ ì‹œì‘...\n");
     for (int i = 0; i < epochs; i++) {
         double total_loss = 0;
-        // 4°³ÀÇ µ¥ÀÌÅÍ¼ÂÀ» ¸ğµÎ »ç¿ëÇÏ¿© ÈÆ·Ã
+        // 4ê°œì˜ ë°ì´í„°ì…‹ì„ ëª¨ë‘ ì‚¬ìš©í•˜ì—¬ í›ˆë ¨
         for (int j = 0; j < 4; j++) {
-            // ¼øÀüÆÄ
+            // ìˆœì „íŒŒ
             forward_propagate(nn, inputs[j]);
 
-            // ¼Õ½Ç °è»ê (¸ğ´ÏÅÍ¸µ¿ë)
+            // ì†ì‹¤ ê³„ì‚° (ëª¨ë‹ˆí„°ë§ìš©)
             total_loss += pow(outputs[j][0] - nn->layers[nn->num_layers - 1].neurons[0].a_output, 2);
 
-            // ¿ªÀüÆÄ
+            // ì—­ì „íŒŒ
             back_propagate(nn, inputs[j], outputs[j], learning_rate);
         }
 
-        // 1000¹ø ¸¶´Ù ¼Õ½Ç Ãâ·Â
+        // 1000ë²ˆ ë§ˆë‹¤ ì†ì‹¤ ì¶œë ¥
         if (i % 1000 == 0) {
             printf("Epoch %d, Loss: %f\n", i, total_loss / 4.0);
         }
     }
-    printf("ÈÆ·Ã Á¾·á!\n\n");
+    printf("í›ˆë ¨ ì¢…ë£Œ!\n\n");
 
-    // 3. °á°ú È®ÀÎ (Testing)
-    printf("Å×½ºÆ® °á°ú:\n");
+    // 3. ê²°ê³¼ í™•ì¸ (Testing)
+    printf("í…ŒìŠ¤íŠ¸ ê²°ê³¼:\n");
     for (int i = 0; i < 4; i++) {
         forward_propagate(nn, inputs[i]);
         double prediction = nn->layers[nn->num_layers - 1].neurons[0].a_output;
-        printf("ÀÔ·Â: [%d, %d], Á¤´ä: %d, ¿¹Ãø: %f\n", (int)inputs[i][0], (int)inputs[i][1], (int)outputs[i][0], prediction);
+        printf("ì…ë ¥: [%d, %d], ì •ë‹µ: %d, ì˜ˆì¸¡: %f\n", (int)inputs[i][0], (int)inputs[i][1], (int)outputs[i][0], prediction);
     }
     
     free_neural_network(nn);
@@ -105,26 +105,26 @@ NeuralNetwork* create_neural_network(const int layer_num, const int neuron_num, 
         return NULL;
     }
 
-    // 1. ½Å°æ¸Á ±¸Á¶Ã¼ ÇÒ´ç
+    // 1. ì‹ ê²½ë§ êµ¬ì¡°ì²´ í• ë‹¹
     NeuralNetwork* nn = malloc(sizeof(NeuralNetwork));
     nn->num_layers = layer_num;
 
-    // 2. ·¹ÀÌ¾î ¹è¿­ ÇÒ´ç
+    // 2. ë ˆì´ì–´ ë°°ì—´ í• ë‹¹
     nn->layers = malloc(sizeof(Layer) * layer_num);
 
 
     for (int i = 0; i < layer_num; i++) {
-        // Æ÷ÀÎÅÍ¸¦ ¾²Áö ¾Ê°í ¹Ù·Î ¹è¿­ÀÇ ¿ä¼Ò¿¡ Á¢±Ù
+        // í¬ì¸í„°ë¥¼ ì“°ì§€ ì•Šê³  ë°”ë¡œ ë°°ì—´ì˜ ìš”ì†Œì— ì ‘ê·¼
         nn->layers[i].num_neurons = neuron_num;
         nn->layers[i].num_weights_per_neuron = weight_num;
         nn->layers[i].neurons = malloc(sizeof(Neuron) * neuron_num);
 
         for (int j = 0; j < neuron_num; j++) {
-            nn->layers[i].neurons[j].bias = 0; // ÆíÇâÀº 0À¸·Î ÃÊ±âÈ­
+            nn->layers[i].neurons[j].bias = 0; // í¸í–¥ì€ 0ìœ¼ë¡œ ì´ˆê¸°í™”
             nn->layers[i].neurons[j].weights = malloc(sizeof(double) * weight_num);
 
             for (int k = 0; k < weight_num; k++) {
-                // °¡ÁßÄ¡¸¦ -0.5 ~ 0.5 »çÀÌÀÇ ÀÛÀº ·£´ı °ªÀ¸·Î ÃÊ±âÈ­
+                // ê°€ì¤‘ì¹˜ë¥¼ -0.5 ~ 0.5 ì‚¬ì´ì˜ ì‘ì€ ëœë¤ ê°’ìœ¼ë¡œ ì´ˆê¸°í™”
                 nn->layers[i].neurons[j].weights[k] = ((double)rand() / RAND_MAX) - 0.5;
             }
         }
@@ -134,45 +134,45 @@ NeuralNetwork* create_neural_network(const int layer_num, const int neuron_num, 
 
 NeuralNetwork* create_neural_network_flexible(const int num_layers, const int* layers_config) {
     if (num_layers <= 1) {
-        return NULL; // ÃÖ¼Ò 2°³ Ãş(ÀÔ·Â, Ãâ·Â)Àº ÀÖ¾î¾ß ÇÔ
+        return NULL; // ìµœì†Œ 2ê°œ ì¸µ(ì…ë ¥, ì¶œë ¥)ì€ ìˆì–´ì•¼ í•¨
     }
 
-    // 1. ½Å°æ¸Á ±¸Á¶Ã¼ ÇÒ´ç
+    // 1. ì‹ ê²½ë§ êµ¬ì¡°ì²´ í• ë‹¹
     NeuralNetwork* nn = malloc(sizeof(NeuralNetwork));
     nn->num_layers = num_layers;
     nn->layers = malloc(sizeof(Layer) * num_layers);
 
-    // 2. °¢ Ãş(Layer)À» ¼ø¼­´ë·Î »ı¼º
+    // 2. ê° ì¸µ(Layer)ì„ ìˆœì„œëŒ€ë¡œ ìƒì„±
     for (int i = 0; i < num_layers; i++) {
         Layer* current_layer = &nn->layers[i];
         
-        // ÇöÀç ÃşÀÇ ´º·± °³¼ö ¼³Á¤
+        // í˜„ì¬ ì¸µì˜ ë‰´ëŸ° ê°œìˆ˜ ì„¤ì •
         current_layer->num_neurons = layers_config[i];
         current_layer->neurons = malloc(sizeof(Neuron) * current_layer->num_neurons);
 
-        // ÇöÀç ÃşÀÇ ´º·±µéÀÌ °¡Áú °¡ÁßÄ¡ÀÇ °³¼ö °áÁ¤
+        // í˜„ì¬ ì¸µì˜ ë‰´ëŸ°ë“¤ì´ ê°€ì§ˆ ê°€ì¤‘ì¹˜ì˜ ê°œìˆ˜ ê²°ì •
         int num_weights_per_neuron = 0;
-        if (i > 0) { // ÀÔ·ÂÃşÀÌ ¾Æ´Ñ °æ¿ì¿¡¸¸
-            // °¡ÁßÄ¡ °³¼ö = ÀÌÀü ÃşÀÇ ´º·± °³¼ö
+        if (i > 0) { // ì…ë ¥ì¸µì´ ì•„ë‹Œ ê²½ìš°ì—ë§Œ
+            // ê°€ì¤‘ì¹˜ ê°œìˆ˜ = ì´ì „ ì¸µì˜ ë‰´ëŸ° ê°œìˆ˜
             num_weights_per_neuron = layers_config[i - 1];
         }
         current_layer->num_weights_per_neuron = num_weights_per_neuron;
 
-        // 3. ÇöÀç ÃşÀÇ °¢ ´º·±(Neuron)À» ÃÊ±âÈ­
+        // 3. í˜„ì¬ ì¸µì˜ ê° ë‰´ëŸ°(Neuron)ì„ ì´ˆê¸°í™”
         for (int j = 0; j < current_layer->num_neurons; j++) {
             Neuron* current_neuron = &current_layer->neurons[j];
             
-            // ÀÔ·ÂÃşÀÌ ¾Æ´Ñ °æ¿ì¿¡¸¸ °¡ÁßÄ¡¿Í ÆíÇâÀ» ÇÒ´çÇÏ°í ÃÊ±âÈ­
+            // ì…ë ¥ì¸µì´ ì•„ë‹Œ ê²½ìš°ì—ë§Œ ê°€ì¤‘ì¹˜ì™€ í¸í–¥ì„ í• ë‹¹í•˜ê³  ì´ˆê¸°í™”
             if (i > 0) {
-                current_neuron->bias = 0; // ÆíÇâÀº 0À¸·Î ½ÃÀÛ
+                current_neuron->bias = 0; // í¸í–¥ì€ 0ìœ¼ë¡œ ì‹œì‘
                 current_neuron->weights = malloc(sizeof(double) * num_weights_per_neuron);
                 
                 for (int k = 0; k < num_weights_per_neuron; k++) {
-                    // °¡ÁßÄ¡¸¦ -0.5 ~ 0.5 »çÀÌÀÇ ÀÛÀº ·£´ı °ªÀ¸·Î ÃÊ±âÈ­
+                    // ê°€ì¤‘ì¹˜ë¥¼ -0.5 ~ 0.5 ì‚¬ì´ì˜ ì‘ì€ ëœë¤ ê°’ìœ¼ë¡œ ì´ˆê¸°í™”
                     current_neuron->weights[k] = ((double)rand() / RAND_MAX) - 0.5;
                 }
             } else {
-                // ÀÔ·ÂÃş ´º·±Àº °¡ÁßÄ¡³ª ÆíÇâÀÌ ¾øÀ½
+                // ì…ë ¥ì¸µ ë‰´ëŸ°ì€ ê°€ì¤‘ì¹˜ë‚˜ í¸í–¥ì´ ì—†ìŒ
                 current_neuron->weights = NULL;
                 current_neuron->bias = 0;
             }
@@ -182,58 +182,58 @@ NeuralNetwork* create_neural_network_flexible(const int num_layers, const int* l
 }
 
 void forward_propagate(NeuralNetwork* nn, double* inputs) {
-    // 1. ÀÔ·ÂÃşÀÇ Ãâ·Â(a_output)Àº ÀÔ·Â°ª ±×´ë·Î ¼³Á¤
+    // 1. ì…ë ¥ì¸µì˜ ì¶œë ¥(a_output)ì€ ì…ë ¥ê°’ ê·¸ëŒ€ë¡œ ì„¤ì •
     Layer* input_layer = &nn->layers[0];
     for (int i = 0; i < input_layer->num_neurons; i++) {
         input_layer->neurons[i].a_output = inputs[i];
     }
 
-    // 2. µÎ ¹øÂ° Ãş(Ã¹ ¹øÂ° Àº´ĞÃş)ºÎÅÍ ¸¶Áö¸· Ãş±îÁö ¼øÀüÆÄ °è»ê
+    // 2. ë‘ ë²ˆì§¸ ì¸µ(ì²« ë²ˆì§¸ ì€ë‹‰ì¸µ)ë¶€í„° ë§ˆì§€ë§‰ ì¸µê¹Œì§€ ìˆœì „íŒŒ ê³„ì‚°
     for (int i = 1; i < nn->num_layers; i++) {
-        Layer* prev_layer = &nn->layers[i - 1]; // ÀÌÀü Ãş
-        Layer* current_layer = &nn->layers[i];   // ÇöÀç Ãş
+        Layer* prev_layer = &nn->layers[i - 1]; // ì´ì „ ì¸µ
+        Layer* current_layer = &nn->layers[i];   // í˜„ì¬ ì¸µ
 
         for (int j = 0; j < current_layer->num_neurons; j++) {
             Neuron* neuron = &current_layer->neurons[j];
             double weighted_sum = 0.0;
 
-            // °¡ÁßÇÕ °è»ê: ÀÌÀü ÃşÀÇ ¸ğµç ´º·± Ãâ·Â(a_output)°ú °¡ÁßÄ¡¸¦ °öÇÔ
+            // ê°€ì¤‘í•© ê³„ì‚°: ì´ì „ ì¸µì˜ ëª¨ë“  ë‰´ëŸ° ì¶œë ¥(a_output)ê³¼ ê°€ì¤‘ì¹˜ë¥¼ ê³±í•¨
             for (int k = 0; k < prev_layer->num_neurons; k++) {
                 weighted_sum += prev_layer->neurons[k].a_output * neuron->weights[k];
             }
             weighted_sum += neuron->bias;
             neuron->z_output = weighted_sum;
 
-            // È°¼ºÈ­ ÇÔ¼ö Àû¿ë
+            // í™œì„±í™” í•¨ìˆ˜ ì ìš©
             neuron->a_output = sigmoid(neuron->z_output);
         }
     }
 }
 
 void back_propagate(NeuralNetwork* nn, double* inputs, double* actual_outputs, double learning_rate) {
-    // 1. ¸¶Áö¸· ÃşºÎÅÍ ¿ª¼øÀ¸·Î ¼øÈ¸
+    // 1. ë§ˆì§€ë§‰ ì¸µë¶€í„° ì—­ìˆœìœ¼ë¡œ ìˆœíšŒ
     for (int i = nn->num_layers - 1; i >= 0; i--) {
         Layer* layer = &nn->layers[i];
         
-        // 2. ÇöÀç Ãş(i)ÀÇ °¢ ´º·±(j)¿¡ ´ëÇØ ¿ÀÂ÷ ½ÅÈ£(delta) °è»ê
+        // 2. í˜„ì¬ ì¸µ(i)ì˜ ê° ë‰´ëŸ°(j)ì— ëŒ€í•´ ì˜¤ì°¨ ì‹ í˜¸(delta) ê³„ì‚°
         for (int j = 0; j < layer->num_neurons; j++) {
             Neuron* neuron = &layer->neurons[j];
             double error_signal;
 
-            if (i == nn->num_layers - 1) { // Ãâ·ÂÃşÀÇ °æ¿ì
+            if (i == nn->num_layers - 1) { // ì¶œë ¥ì¸µì˜ ê²½ìš°
                 double error = neuron->a_output - actual_outputs[j];
                 error_signal = error * sigmoid_derivative(neuron->a_output);
-            } else { // ¼û°ÜÁø ÃşÀÇ °æ¿ì
+            } else { // ìˆ¨ê²¨ì§„ ì¸µì˜ ê²½ìš°
                 double propagated_error = 0.0;
                 Layer* next_layer = &nn->layers[i + 1];
                 
                 for (int k = 0; k < next_layer->num_neurons; k++) {
-                    // ´ÙÀ½ Ãş ´º·± kÀÇ ÀúÀåµÈ error_delta °ªÀ» »ç¿ë
+                    // ë‹¤ìŒ ì¸µ ë‰´ëŸ° kì˜ ì €ì¥ëœ error_delta ê°’ì„ ì‚¬ìš©
                     propagated_error += next_layer->neurons[k].error_delta * next_layer->neurons[k].weights[j];
                 }
                 error_signal = propagated_error * sigmoid_derivative(neuron->a_output);
             }
-            // °è»êµÈ ¿ÀÂ÷ ½ÅÈ£¸¦ ´º·± ³»ºÎ¿¡ ÀúÀå
+            // ê³„ì‚°ëœ ì˜¤ì°¨ ì‹ í˜¸ë¥¼ ë‰´ëŸ° ë‚´ë¶€ì— ì €ì¥
             neuron->error_delta = error_signal; 
         }
 
@@ -241,40 +241,40 @@ void back_propagate(NeuralNetwork* nn, double* inputs, double* actual_outputs, d
             Neuron* neuron = &layer->neurons[j];
 
             for (int k = 0; k < layer->num_weights_per_neuron; k++) {
-                // ÀÌ °¡ÁßÄ¡(k)¿¡ ÇØ´çÇÏ´Â ÀÔ·ÂÀ» Á÷Á¢ Ã£À½
+                // ì´ ê°€ì¤‘ì¹˜(k)ì— í•´ë‹¹í•˜ëŠ” ì…ë ¥ì„ ì§ì ‘ ì°¾ìŒ
                 double input_for_this_weight;
                 if (i == 0) {
-                    // Ã¹ ¹øÂ° ÃşÀÇ °æ¿ì, ÃÖÃÊ ÀÔ·ÂÀ» »ç¿ë
+                    // ì²« ë²ˆì§¸ ì¸µì˜ ê²½ìš°, ìµœì´ˆ ì…ë ¥ì„ ì‚¬ìš©
                     input_for_this_weight = inputs[k];
                 } else {
-                    // ¼û°ÜÁø ÃşÀÇ °æ¿ì, ÀÌÀü ÃşÀÇ k¹øÂ° ´º·± Ãâ·ÂÀ» »ç¿ë
+                    // ìˆ¨ê²¨ì§„ ì¸µì˜ ê²½ìš°, ì´ì „ ì¸µì˜ kë²ˆì§¸ ë‰´ëŸ° ì¶œë ¥ì„ ì‚¬ìš©
                     input_for_this_weight = nn->layers[i - 1].neurons[k].a_output;
                 }
                 
-                // ±×·¡µğ¾ğÆ® °è»ê ¹× °¡ÁßÄ¡ ¾÷µ¥ÀÌÆ®
+                // ê·¸ë˜ë””ì–¸íŠ¸ ê³„ì‚° ë° ê°€ì¤‘ì¹˜ ì—…ë°ì´íŠ¸
                 double gradient = neuron->error_delta * input_for_this_weight;
                 neuron->weights[k] -= learning_rate * gradient;
             }
             
-            // ÆíÇâ ¾÷µ¥ÀÌÆ®
+            // í¸í–¥ ì—…ë°ì´íŠ¸
             neuron->bias -= learning_rate * neuron->error_delta;
         }
     }
 }
 
 void free_neural_network(NeuralNetwork* nn) {
-    // ½Å°æ¸Á Æ÷ÀÎÅÍ°¡ NULLÀÌ¸é ¾Æ¹«°Íµµ ÇÏÁö ¾ÊÀ½
+    // ì‹ ê²½ë§ í¬ì¸í„°ê°€ NULLì´ë©´ ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠìŒ
     if (nn == NULL) {
         return;
     }
 
-    // 1. °¡Àå ¾ÈÂÊºÎÅÍ, °¢ Ãş(Layer)À» ¼øÈ¸
+    // 1. ê°€ì¥ ì•ˆìª½ë¶€í„°, ê° ì¸µ(Layer)ì„ ìˆœíšŒ
     for (int i = 0; i < nn->num_layers; i++) {
         Layer* layer = &nn->layers[i];
         
-        // ÀÔ·ÂÃşÀÌ ¾Æ´Ñ °æ¿ì¿¡¸¸ °¡ÁßÄ¡ ¹è¿­ ÇØÁ¦
+        // ì…ë ¥ì¸µì´ ì•„ë‹Œ ê²½ìš°ì—ë§Œ ê°€ì¤‘ì¹˜ ë°°ì—´ í•´ì œ
         if (i > 0) {
-            // 2. °¢ ´º·±(Neuron)À» ¼øÈ¸ÇÏ¸ç °¡ÁßÄ¡(weights) ¹è¿­ ÇØÁ¦
+            // 2. ê° ë‰´ëŸ°(Neuron)ì„ ìˆœíšŒí•˜ë©° ê°€ì¤‘ì¹˜(weights) ë°°ì—´ í•´ì œ
             for (int j = 0; j < layer->num_neurons; j++) {
                 if (layer->neurons[j].weights != NULL) {
                     free(layer->neurons[j].weights);
@@ -282,17 +282,17 @@ void free_neural_network(NeuralNetwork* nn) {
             }
         }
         
-        // 3. ´º·±(Neuron) ¹è¿­ ÇØÁ¦
+        // 3. ë‰´ëŸ°(Neuron) ë°°ì—´ í•´ì œ
         if (layer->neurons != NULL) {
             free(layer->neurons);
         }
     }
 
-    // 4. ·¹ÀÌ¾î(Layer) ¹è¿­ ÇØÁ¦
+    // 4. ë ˆì´ì–´(Layer) ë°°ì—´ í•´ì œ
     if (nn->layers != NULL) {
         free(nn->layers);
     }
 
-    // 5. ¸¶Áö¸·À¸·Î ½Å°æ¸Á(NeuralNetwork) ±¸Á¶Ã¼ ÀÚÃ¼¸¦ ÇØÁ¦
+    // 5. ë§ˆì§€ë§‰ìœ¼ë¡œ ì‹ ê²½ë§(NeuralNetwork) êµ¬ì¡°ì²´ ìì²´ë¥¼ í•´ì œ
     free(nn);
 }

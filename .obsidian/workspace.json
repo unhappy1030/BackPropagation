@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "7d329e7c4a585b44",
+        "id": "513795f0e129a66b",
         "type": "tabs",
         "children": [
           {
-            "id": "5e26c8f543946c58",
+            "id": "9d595fc91bb8c5bb",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "새 탭"
+              "title": "README"
             }
           }
         ]
@@ -161,6 +165,23 @@
       "command-palette:명령어 팔레트 열기": false
     }
   },
-  "active": "5e26c8f543946c58",
-  "lastOpenFiles": []
+  "active": "9d595fc91bb8c5bb",
+  "lastOpenFiles": [
+    "README.md",
+    "README.md",
+    "c_backprop/README.md",
+    "obsidian/README.md",
+    "c_backprop/Sigmoid.png",
+    "c_backprop/Road Map.md",
+    "c_backprop/Pasted image 20250811144346.png",
+    "c_backprop/Pasted image 20250811144215.png",
+    "c_backprop/Pasted image 20250811144150.png",
+    "c_backprop",
+    "obsidian/Sigmoid.png",
+    "obsidian/Road Map.md",
+    "obsidian/Pasted image 20250811144346.png",
+    "obsidian/Pasted image 20250811144215.png",
+    "obsidian/Pasted image 20250811144150.png",
+    "obsidian"
+  ]
 }
