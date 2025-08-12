@@ -137,7 +137,67 @@ void back_propagate(NeuralNetwork* nn, double* inputs, double* actual_outputs, d
                     // 다음 층 뉴런 k의 저장된 error_delta 값을 사용
                     propagated_error += next_layer->neurons[k].error_delta * next_layer->neurons[k].weights[j];
                 }
+                error_signal = propagated_error * sigmoid_derivative(neuron->a_output);
             }
+            // 계산된 오차 신호를 뉴런 내부에 저장
+            neuron->error_delta = error_signal;
+        }
+
+        for(int j = 0; j < layer->num_neurons; j++){
+            Neuron* neuron = &layer->neurons[j];
+            for(int k = 0; k < layer->num_neurons; k++){
+                // 이 가중치(k)에 해당하는 입력을 직접 찾음
+                double input_for_this_weight;
+                if(i == 0){
+                    // 첫 번째 층의 경우, 최초 입력을 사용
+                    input_for_this_weight = inputs[k];
+                }else {
+                    // 히든 레이어의 경우, 이전 층의 k번째 뉴런 출력을 사용
+                    input_for_this_weight = nn->layers[i - 1].neurons[k].a_output;
+                }
+
+                // 그래디언트 계산 및 가중치 업데이트
+                double gradient = neuron->error_delta * input_for_this_weight;
+                neuron->weights[k] -= learning_rate * gradient;
+            }
+
+            // 편향 업데이트
+            neuron->bias -= learning_rate * neuron->error_delta;
         }
     }
+}
+
+void free_neural_network(NeuralNetwork* nn){
+    // 신경망 포인터가 NULL이면 아무것도 하지 않음
+    if(nn == NULL){
+        return;
+    }
+
+    // 1. 가장 안쪽부터, 각 층(layer)을 순회
+    for(int i = 0; i < nn->num_layers; i++){
+        Layer* layer = &nn->layers[i];
+
+        // 입력층이 아닌 경우에만 가중치 배열 해제
+        if(i > 0){
+            // 2. 각 뉴런(Neuron)을 순회하며 가중치(weights) 배열 해제
+            for(int j = 0; j < layer->num_neurons; j++){
+                if(layer->neurons[j].weights != NULL){
+                    free(layer->neurons[j].weights);
+                }
+            }
+        }
+
+        // 3. 뉴련(Neuron) 배열 해제
+        if(layer->neurons != NULL){
+            free(layer->neurons);
+        }
+    }
+
+    // 4. 레이어 배열해제
+    if(nn->layers != NULL){
+        free(nn->layers);
+    }
+
+    // 5. 마지막으로 신경망 구조체 자체를 해제
+    free(nn);
 }
